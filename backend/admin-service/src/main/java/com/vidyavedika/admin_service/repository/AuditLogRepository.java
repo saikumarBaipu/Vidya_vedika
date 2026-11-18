@@ -1,0 +1,1 @@
+package com.vidyavedika.admin_service.repository; import com.vidyavedika.admin_service.entity.AuditLog; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface AuditLogRepository extends JpaRepository<AuditLog,Long>{List<AuditLog> findTop100ByOrderByCreatedAtDesc();}

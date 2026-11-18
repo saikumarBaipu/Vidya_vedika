@@ -1,0 +1,13 @@
+server:
+  port: 8089
+spring:
+  application:
+    name: admin-service
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3307/vidya_admin?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false

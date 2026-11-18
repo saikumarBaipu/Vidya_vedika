@@ -1,0 +1,113 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-root}
+    ports: ["3307:3306"]
+    volumes: [mysql_data:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  auth-service:
+    build: ../../backend/auth-service
+    environment:
+      MYSQL_URL: jdbc:mysql://mysql:3306/vidya_auth?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-please-use-a-strong-secret-32chars}
+    depends_on: {mysql: {condition: service_healthy}}
+    ports: ["8081:8081"]
+
+  user-service:
+    build: ../../backend/user-service
+    environment:
+      MYSQL_URL: jdbc:mysql://mysql:3306/vidya_user?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+    depends_on: {mysql: {condition: service_healthy}}
+    ports: ["8082:8082"]
+
+  language-service:
+    build: ../../backend/language-service
+    environment:
+      MYSQL_URL: jdbc:mysql://mysql:3306/vidya_language?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+    depends_on: {mysql: {condition: service_healthy}}
+    ports: ["8083:8083"]
+
+  learning-service:
+    build: ../../backend/learning-service
+    environment:
+      MYSQL_URL: jdbc:mysql://mysql:3306/vidya_learning?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+    depends_on: {mysql: {condition: service_healthy}}
+    ports: ["8084:8084"]
+
+  ai-practice-service:
+    build: ../../backend/ai-practice-service
+    environment:
+      AI_PROVIDER: ${AI_PROVIDER:-ollama}
+      AI_BASE_URL: ${AI_BASE_URL:-http://ollama:11434}
+      AI_MODEL: ${AI_MODEL:-llama3.2:3b}
+    depends_on: [ollama]
+    ports: ["8085:8085"]
+
+  mock-interview-service:
+    build: ../../backend/mock-interview-service
+    environment:
+      MYSQL_URL: jdbc:mysql://mysql:3306/vidya_interview?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+    depends_on: {mysql: {condition: service_healthy}}
+    ports: ["8086:8086"]
+
+  payment-service:
+    build: ../../backend/payment-service
+    environment:
+      MYSQL_URL: jdbc:mysql://mysql:3306/vidya_payment?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+    depends_on: {mysql: {condition: service_healthy}}
+    ports: ["8087:8087"]
+
+  notification-service:
+    build: ../../backend/notification-service
+    ports: ["8088:8088"]
+
+  admin-service:
+    build: ../../backend/admin-service
+    environment:
+      MYSQL_URL: jdbc:mysql://mysql:3306/vidya_admin?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+    depends_on: {mysql: {condition: service_healthy}}
+    ports: ["8089:8089"]
+
+  api-gateway:
+    build: ../../backend/api-gateway
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:8081
+      USER_SERVICE_URL: http://user-service:8082
+      LANGUAGE_SERVICE_URL: http://language-service:8083
+      LEARNING_SERVICE_URL: http://learning-service:8084
+      AI_SERVICE_URL: http://ai-practice-service:8085
+      INTERVIEW_SERVICE_URL: http://mock-interview-service:8086
+      PAYMENT_SERVICE_URL: http://payment-service:8087
+      NOTIFICATION_SERVICE_URL: http://notification-service:8088
+      ADMIN_SERVICE_URL: http://admin-service:8089
+    depends_on: [auth-service, user-service, language-service, learning-service, ai-practice-service, mock-interview-service, payment-service, notification-service, admin-service]
+    ports: ["8080:8080"]
+
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
+    volumes: [ollama_data:/root/.ollama]
+
+volumes:
+  mysql_data:
+  ollama_data:

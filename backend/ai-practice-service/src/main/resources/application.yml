@@ -1,0 +1,9 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: ai-practice-service
+ai:
+  provider: ${AI_PROVIDER:fallback}
+  base-url: ${AI_BASE_URL:http://localhost:11434}
+  model: ${AI_MODEL:llama3.2}

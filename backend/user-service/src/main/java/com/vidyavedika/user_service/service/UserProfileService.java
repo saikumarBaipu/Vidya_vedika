@@ -1,0 +1,5 @@
+package com.vidyavedika.user_service.service;
+import com.vidyavedika.user_service.dto.UserProfileDto; import com.vidyavedika.user_service.entity.UserProfile; import com.vidyavedika.user_service.repository.UserProfileRepository; import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional;
+@Service public class UserProfileService { private final UserProfileRepository repo; public UserProfileService(UserProfileRepository r){repo=r;}
+@Transactional public UserProfile get(Long id,String fallback){return repo.findById(id).orElseGet(()->{UserProfile p=new UserProfile();p.setUserId(id);p.setDisplayName(fallback==null?"Learner":fallback);return repo.save(p);});}
+@Transactional public UserProfile update(Long id,UserProfileDto d){UserProfile p=get(id,d.displayName());p.setDisplayName(d.displayName());p.setPreferredLanguage(d.preferredLanguage());p.setLearningLevel(d.learningLevel());p.setLearningGoals(d.learningGoals());p.setDailyPracticeTarget(d.dailyPracticeTarget());p.setProfilePhotoUrl(d.profilePhotoUrl());return repo.save(p);}}

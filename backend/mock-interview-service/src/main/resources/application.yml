@@ -1,0 +1,13 @@
+server:
+  port: 8086
+spring:
+  application:
+    name: mock-interview-service
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3307/vidya_interview?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false

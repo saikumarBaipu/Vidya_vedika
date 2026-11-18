@@ -1,0 +1,2514 @@
+# Vidya Vedika
+## AI Language Learning & Mock Interview Platform
+
+**Document Type:** Technical & Functional Project Documentation  
+**Platform:** Vidya Vedika  
+**Architecture:** React + Spring Boot Microservices  
+**Primary Database:** MySQL  
+**AI Architecture:** Pluggable AI Provider Model  
+**Target:** Production-oriented Educational SaaS Platform
+
+---
+
+# 1. Executive Summary
+
+Vidya Vedika is a modern educational SaaS platform designed to combine:
+
+- Language learning
+- Daily language practice
+- Vocabulary development
+- Grammar and sentence correction
+- AI-powered conversation practice
+- Mock interview preparation
+- Learning progress tracking
+- Student analytics
+- Administrative content management
+- Optional financial support/contributions
+
+The platform is intended to support learners from beginner through advanced levels while providing personalized practice and feedback.
+
+The core product concept is:
+
+> **Learn → Practice → Receive Feedback → Track Progress → Improve → Prepare for Real-World Communication**
+
+The platform is designed as a responsive web application with a React frontend and Java 17+/Spring Boot microservices backend.
+
+---
+
+# 2. Product Vision
+
+Vidya Vedika aims to provide a single platform where a learner can:
+
+1. Create an account.
+2. Select languages and learning goals.
+3. Follow structured lessons.
+4. Practice vocabulary and grammar.
+5. Complete daily learning activities.
+6. Practice conversations with AI.
+7. Submit sentences for correction.
+8. Practice mock interviews.
+9. Receive performance feedback.
+10. Track learning progress.
+11. Earn achievements and badges.
+12. Review historical performance.
+
+The administrator can manage:
+
+- Users
+- Languages
+- Lessons
+- Vocabulary
+- Learning content
+- AI topics
+- AI prompts
+- Interview categories
+- Interview questions
+- Reports
+- Notifications
+- Optional contribution/support information
+
+---
+
+# 3. High-Level System Architecture
+
+The target architecture is a microservices-based system.
+
+text
+                         ┌───────────────────────┐
+                         │      User Browser     │
+                         │                       │
+                         │ React + TypeScript    │
+                         │ Vite + Tailwind CSS   │
+                         └───────────┬───────────┘
+                                     │
+                                     │ HTTPS / REST
+                                     ▼
+                         ┌───────────────────────┐
+                         │      API Gateway      │
+                         │ Spring Cloud Gateway  │
+                         │ Authentication        │
+                         │ Routing               │
+                         └───────────┬───────────┘
+                                     │
+            ┌────────────────────────┼─────────────────────────┐
+            │                        │                         │
+            ▼                        ▼                         ▼
+     ┌──────────────┐        ┌──────────────┐        ┌──────────────┐
+     │ Auth Service │        │ User Service │        │Language       │
+     │              │        │              │        │Service        │
+     └──────────────┘        └──────────────┘        └──────────────┘
+            │                        │                         │
+            └────────────────────────┼─────────────────────────┘
+                                     │
+              ┌──────────────────────┼────────────────────────┐
+              │                      │                        │
+              ▼                      ▼                        ▼
+       ┌──────────────┐       ┌──────────────┐       ┌──────────────┐
+       │Learning      │       │AI Practice   │       │Mock Interview│
+       │Service       │       │Service       │       │Service       │
+       └──────────────┘       └──────┬───────┘       └──────────────┘
+                                     │
+                                     ▼
+                              ┌──────────────┐
+                              │ AI Provider  │
+                              │ Abstraction  │
+                              ├──────────────┤
+                              │ Ollama       │
+                              │ Gemini*      │
+                              │ Other*       │
+                              └──────────────┘
+
+              ┌──────────────────────┼───────────────────────┐
+              │                      │                       │
+              ▼                      ▼                       ▼
+       ┌──────────────┐       ┌──────────────┐       ┌──────────────┐
+       │Payment       │       │Notification  │       │Admin Service │
+       │Service       │       │Service       │       │              │
+       └──────────────┘       └──────────────┘       └──────────────┘
+                                     │
+                                     ▼
+                              ┌──────────────┐
+                              │    MySQL     │
+                              │ Persistence  │
+                              └──────────────┘
+
+
+The specification explicitly defines the frontend → API Gateway → microservices → MySQL architecture and identifies ten backend services.
+
+---
+
+# 4. Technology Stack
+
+## 4.1 Frontend
+
+### React.js
+
+React is the primary frontend framework.
+
+Responsibilities include:
+
+- UI rendering
+- Component management
+- Client-side application state
+- User interaction
+- Dashboard rendering
+- Forms
+- Protected routes
+- API integration
+
+### Vite
+
+Vite is used as the frontend build/development tool.
+
+It provides:
+
+- Fast development server
+- Modern JavaScript/TypeScript build
+- Production bundling
+
+### TypeScript
+
+TypeScript is preferred for the frontend.
+
+Benefits include:
+
+- Type safety
+- Better API models
+- Easier maintenance
+- Improved IDE support
+- Reduced runtime mistakes
+
+### React Router
+
+Used for application navigation.
+
+Example routes include:
+
+text
+/
+ /languages
+ /languages/{language-name}
+ /dashboard
+ /practice
+ /interviews
+ /profile
+ /admin
+
+
+### Tailwind CSS
+
+Used for responsive and reusable UI styling.
+
+The intended design language includes:
+
+- Rounded cards
+- Subtle shadows
+- Deep blue primary color
+- Purple secondary color
+- Green accent
+- Light backgrounds
+- Responsive layouts
+
+### Axios
+
+Used for frontend-to-backend HTTP communication.
+
+### React Hook Form
+
+Used for structured form handling and validation.
+
+### Recharts
+
+Used for analytics visualizations including:
+
+- Line charts
+- Bar charts
+- Progress charts
+- Learning analytics
+
+These frontend technologies are explicitly identified in the platform specification.
+
+---
+
+# 5. Backend Technology Stack
+
+## Java
+
+The backend targets:
+
+text
+Java 17+
+
+
+The project architecture is based on modern Java/Spring Boot.
+
+## Spring Boot
+
+Spring Boot is the primary backend framework.
+
+It provides:
+
+- REST APIs
+- Dependency injection
+- Configuration
+- Application lifecycle
+- Database integration
+- Security integration
+
+## Spring Web
+
+Used to create REST APIs.
+
+## Spring Data JPA
+
+Used for relational database persistence.
+
+Typical flow:
+
+text
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+JPA
+    ↓
+MySQL
+
+
+## Spring Security
+
+Used for:
+
+- Authentication
+- Authorization
+- Protected endpoints
+- Role-based access
+
+## JWT
+
+JSON Web Tokens are used for stateless authentication.
+
+## BCrypt
+
+Passwords are hashed using BCrypt.
+
+## Bean Validation
+
+Used to validate API requests.
+
+Examples:
+
+text
+@NotNull
+@NotBlank
+@Email
+@Size
+@Min
+@Max
+
+
+## OpenFeign
+
+Can be used where appropriate for service-to-service REST communication.
+
+## Spring Cloud Gateway
+
+The API Gateway provides centralized routing and gateway-level security.
+
+## Eureka
+
+Eureka Service Discovery may be used where required by the deployment architecture.
+
+These backend technologies are specified in the project requirements.
+
+---
+
+# 6. Backend Microservices
+
+Vidya Vedika contains the following major services.
+
+## 6.1 API Gateway
+
+Responsibilities:
+
+- Single API entry point
+- Routing
+- Authentication enforcement
+- Authorization boundary
+- CORS handling
+- Request forwarding
+
+Example:
+
+text
+Frontend
+   ↓
+/api/auth/**
+   ↓
+Auth Service
+
+/api/users/**
+   ↓
+User Service
+
+/api/languages/**
+   ↓
+Language Service
+
+/api/learning/**
+   ↓
+Learning Service
+
+/api/ai/**
+   ↓
+AI Practice Service
+
+/api/interviews/**
+   ↓
+Mock Interview Service
+
+/api/admin/**
+   ↓
+Admin Service
+
+
+---
+
+# 7. Authentication Service
+
+The Auth Service handles identity and access.
+
+## Features
+
+### Registration
+
+http
+POST /api/auth/register
+
+
+The user provides:
+
+text
+Name
+Email
+Password
+
+
+The password must be securely hashed before persistence.
+
+### Login
+
+http
+POST /api/auth/login
+
+
+Successful authentication returns an access token.
+
+### Logout
+
+The application supports logout behavior.
+
+### Forgot Password
+
+http
+POST /api/auth/forgot-password
+
+
+### Password Reset
+
+text
+reset token
+     ↓
+validate token
+     ↓
+new password
+     ↓
+BCrypt hash
+     ↓
+persist
+
+
+### Roles
+
+The initial role model contains:
+
+text
+USER
+ADMIN
+
+
+Authorization must be enforced by the backend rather than trusting a frontend role value.
+
+---
+
+# 8. User Service
+
+The User Service manages learner profile information.
+
+## User Profile
+
+The profile can contain:
+
+- Name
+- Profile photo
+- Email
+- Preferred language
+- Learning level
+- Learning goals
+- Daily practice target
+- Password/security preferences
+- Notification settings
+
+Users should be able to securely update their profile.
+
+---
+
+# 9. Language Service
+
+The Language Service provides the language catalog.
+
+Initial languages include:
+
+text
+English
+Hindi
+Telugu
+Kannada
+Tamil
+Malayalam
+Marathi
+Bengali
+Spanish
+French
+German
+Japanese
+
+
+The database should be designed so administrators can add additional languages without requiring application code changes.
+
+Each language can contain:
+
+text
+Language
+Flag/Icon
+Levels
+Lessons
+Vocabulary
+Pronunciation resources
+
+
+The platform route is:
+
+text
+/languages/{language-name}
+
+
+The language requirements are defined in the supplied specification.
+
+---
+
+# 10. Learning Service
+
+The Learning Service is the core educational system.
+
+## Learning progression
+
+A learner progresses through:
+
+text
+Alphabet / Script
+       ↓
+Common Words
+       ↓
+Pronunciation
+       ↓
+Spelling
+       ↓
+Basic Grammar
+       ↓
+Useful Sentences
+       ↓
+Conversations
+       ↓
+Listening
+       ↓
+Reading
+       ↓
+Writing
+       ↓
+Quizzes
+       ↓
+AI Conversation Practice
+
+
+## Lesson State
+
+Lessons can be:
+
+text
+LOCKED
+AVAILABLE
+IN_PROGRESS
+COMPLETED
+
+
+Users progressively unlock learning content.
+
+## Progress Tracking
+
+The system tracks:
+
+- Current lesson
+- Completed lessons
+- Locked lessons
+- Progress percentage
+- Quiz scores
+- Time spent
+
+The specification requires learning progress to be persisted in MySQL.
+
+---
+
+# 11. Daily Practice
+
+The Daily Practice system provides a small set of daily activities.
+
+The specification calls for approximately:
+
+text
+5–10 words/tasks per day
+
+
+A vocabulary item may contain:
+
+text
+Word
+Meaning
+Pronunciation
+Example sentence
+Audio
+
+
+Example:
+
+text
+Word:
+Beautiful
+
+Meaning:
+Attractive or pleasing
+
+Example:
+The garden is beautiful.
+
+
+Daily activities can include:
+
+- Vocabulary
+- Pronunciation
+- Spelling
+- Listening
+- Speaking
+- Quizzes
+
+The application tracks completion:
+
+text
+Today's Practice
+
+7 / 10 tasks completed
+
+
+Streaks are calculated from completed activities.
+
+---
+
+# 12. AI Practice Service
+
+The AI Practice Service provides conversational learning.
+
+## Topics
+
+Examples:
+
+text
+Self Introduction
+Daily Conversation
+Shopping
+Restaurant
+Airport
+Directions
+Job Interview
+College Conversation
+Office Conversation
+Telephone Conversation
+Making Friends
+Travel
+Doctor Visit
+Customer Service
+Business Conversation
+Public Speaking
+
+
+## Difficulty
+
+text
+Beginner
+Intermediate
+Advanced
+
+
+## AI conversation model
+
+The AI should:
+
+1. Ask one question at a time.
+2. Adapt to learner level.
+3. Maintain conversation context.
+4. Correct major mistakes.
+5. Provide useful feedback.
+6. Encourage continued practice.
+
+The specification explicitly requires conversation context and feedback.
+
+---
+
+# 13. AI Provider Architecture
+
+The AI layer is deliberately abstracted.
+
+text
+                 AIProvider
+                     │
+          ┌──────────┼──────────┐
+          │          │          │
+          ▼          ▼          ▼
+       Ollama      Gemini    Other Provider
+
+
+Example interface:
+
+java
+public interface AIProvider {
+
+    AIResponse generate(AIRequest request);
+
+}
+
+
+Possible implementations:
+
+text
+OllamaAIProvider
+GeminiAIProvider
+OpenAICompatibleProvider
+FallbackAIProvider
+
+
+This means the business logic does not need to know which AI provider is being used.
+
+The specification specifically requires that AI providers be swappable and that API keys never be hard-coded.
+
+---
+
+# 14. Ollama / Local AI
+
+Ollama is the recommended local development option.
+
+Example configuration:
+
+properties
+ai.provider=ollama
+ai.base-url=${AI_BASE_URL:http://localhost:11434}
+ai.model=${AI_MODEL:...}
+
+
+If the AI provider is unavailable, the application should remain operational.
+
+Example fallback:
+
+text
+AI temporarily unavailable.
+
+You can continue practicing using guided exercises.
+
+
+The AI failure should not bring down the rest of the platform.
+
+---
+
+# 15. Sentence Correction
+
+The Sentence Correction feature accepts learner-written text.
+
+Example:
+
+text
+Input:
+I am go to school yesterday.
+
+
+Expected correction:
+
+text
+I went to school yesterday.
+
+
+The response should include:
+
+text
+Original sentence
+Corrected sentence
+Explanation
+Grammar mistake
+Natural version
+Example sentences
+Correction score
+Improvement suggestions
+
+
+Correction history should be stored.
+
+The intended goal is not only to correct the sentence but also to explain the mistake in simple language.
+
+---
+
+# 16. Mock Interview Service
+
+The Mock Interview Service provides interview practice.
+
+## Interview categories
+
+Examples:
+
+text
+HR Interview
+Technical Interview
+Fresher Interview
+Experienced Professional
+Campus Placement
+Customer Service
+Sales
+Software Developer
+General Interview
+
+
+## Modes
+
+text
+Text Interview
+Voice Interview
+AI Interview
+
+
+## Interview workflow
+
+text
+Select Interview Type
+        ↓
+Select Difficulty
+        ↓
+Start Interview
+        ↓
+AI asks Question
+        ↓
+User Answers
+        ↓
+AI evaluates Answer
+        ↓
+Next Question
+        ↓
+Interview Complete
+        ↓
+Performance Report
+
+
+At completion, the platform generates:
+
+- Overall performance
+- Communication score
+- Grammar score
+- Confidence
+- Answer quality
+- Vocabulary
+- Areas for improvement
+- Questions answered
+- Suggested better answers
+
+Historical performance can be visualized so users can compare attempts.
+
+---
+
+# 17. Dashboard
+
+The learner dashboard provides a personalized overview.
+
+## Dashboard information
+
+text
+Welcome message
+Profile
+Learning streak
+Total practice sessions
+Overall learning percentage
+Language progress
+Mock interview attempts
+AI practice sessions
+Recent activities
+Daily learning task
+Achievements
+Badges
+
+
+## Analytics
+
+The dashboard can visualize:
+
+text
+Daily practice time
+Weekly practice sessions
+Monthly learning progress
+Words learned
+Language-wise progress
+Mock interview performance
+AI practice accuracy
+
+
+Charts can use:
+
+- Line charts
+- Bar charts
+- Progress/Doughnut charts
+
+The dashboard requirements are defined in the supplied platform specification.
+
+---
+
+# 18. Achievement System
+
+The platform includes:
+
+text
+Achievement
+UserAchievement
+Badge
+
+
+Examples of achievement concepts:
+
+text
+First Lesson
+7-Day Streak
+100 Words
+First AI Conversation
+First Mock Interview
+Completed Language Level
+
+
+The exact achievement catalog can be managed as platform content.
+
+---
+
+# 19. Admin Service
+
+The Admin Service provides administrative management.
+
+## Admin Dashboard
+
+The dashboard can show:
+
+text
+Total users
+Active users
+New registrations
+Language practice sessions
+Mock interviews
+AI sessions
+Daily active users
+User retention
+Optional contributions
+Popular languages
+
+
+Charts and summary cards provide administrative analytics.
+
+---
+
+# 20. User Management
+
+Administrators can:
+
+text
+View users
+Search users
+Filter users
+View profile
+Activate account
+Deactivate account
+Delete account
+View learning progress
+View practice history
+View interview history
+
+
+Pagination is required so that thousands of users are not loaded in a single request.
+
+---
+
+# 21. Language Content Management
+
+Administrators can manage:
+
+text
+Languages
+Lessons
+Vocabulary
+Meanings
+Example sentences
+Pronunciation resources
+Daily tasks
+Learning levels
+
+
+This allows the educational content to evolve without changing application source code.
+
+---
+
+# 22. AI Content Management
+
+Administrators can manage:
+
+text
+AI practice topics
+Conversation scenarios
+Difficulty levels
+Prompt templates
+Sentence correction examples
+Vocabulary
+AI feedback configuration
+
+
+AI prompts should be maintained in a centralized prompt/template system rather than being duplicated throughout controllers.
+
+---
+
+# 23. Mock Interview Management
+
+Administrators can manage:
+
+text
+Interview categories
+Questions
+Question difficulty
+Question ordering
+Question organization
+Interview analytics
+
+
+This makes the interview engine content-driven.
+
+---
+
+# 24. Optional Support / Contributions
+
+The platform can provide an optional:
+
+text
+Support Vidya Vedika
+
+
+feature.
+
+Important business rule:
+
+> Learning must never require payment.
+
+Possible information:
+
+text
+QR Code
+UPI ID
+Optional contribution amount
+Thank-you message
+Contribution history
+
+
+Sensitive card/payment credentials should not be stored.
+
+The payment system is intended to remain modular and isolated.
+
+---
+
+# 25. Notification Service
+
+The Notification Service can support:
+
+text
+Learning reminders
+Daily practice reminders
+Achievement notifications
+Password/security notifications
+System notifications
+
+
+Notification settings can be controlled by the user.
+
+---
+
+# 26. Database Architecture
+
+The platform uses a relational MySQL data model.
+
+Important entities specified by the requirements include:
+
+text
+User
+Role
+UserProfile
+Language
+LanguageLevel
+Lesson
+Vocabulary
+DailyTask
+UserLessonProgress
+UserLanguageProgress
+PracticeSession
+AIConversation
+AIMessage
+SentenceCorrection
+MockInterview
+InterviewQuestion
+InterviewAnswer
+InterviewResult
+Achievement
+UserAchievement
+Notification
+SupportContribution
+AuditLog
+
+
+The design should include:
+
+- Primary keys
+- Foreign keys
+- Indexes
+- Created timestamps
+- Updated timestamps
+- Appropriate constraints
+
+The specification specifically says not to store everything as unstructured JSON.
+
+---
+
+# 27. Recommended Data Relationships
+
+A simplified relational model is:
+
+text
+User
+ │
+ ├── UserProfile
+ │
+ ├── UserLanguageProgress
+ │       │
+ │       └── Language
+ │              │
+ │              └── LanguageLevel
+ │                     │
+ │                     └── Lesson
+ │                            │
+ │                            └── Vocabulary
+ │
+ ├── UserLessonProgress
+ │
+ ├── PracticeSession
+ │       └── AIConversation
+ │              └── AIMessage
+ │
+ ├── SentenceCorrection
+ │
+ ├── MockInterview
+ │       ├── InterviewAnswer
+ │       └── InterviewResult
+ │
+ ├── UserAchievement
+ │       └── Achievement
+ │
+ ├── Notification
+ │
+ └── SupportContribution
+
+
+---
+
+# 28. REST API Architecture
+
+The system exposes RESTful APIs.
+
+## Authentication
+
+http
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/forgot-password
+
+
+## User
+
+http
+GET /api/users/me
+PUT /api/users/me
+
+
+## Languages
+
+http
+GET /api/languages
+GET /api/languages/{id}
+GET /api/languages/{id}/lessons
+
+
+## Learning
+
+http
+POST /api/learning/progress
+GET /api/dashboard
+GET /api/daily-practice
+
+
+## AI
+
+http
+POST /api/ai/practice
+POST /api/ai/correction
+
+
+## Interviews
+
+http
+POST /api/interviews/start
+POST /api/interviews/{id}/answer
+POST /api/interviews/{id}/complete
+
+
+## Administration
+
+http
+GET /api/admin/users
+POST /api/admin/languages
+PUT /api/admin/languages/{id}
+DELETE /api/admin/languages/{id}
+
+
+The supplied requirements define these as representative REST API contracts.
+
+---
+
+# 29. Standard API Error Response
+
+The application should use a consistent error format.
+
+Example:
+
+json
+{
+  "timestamp": "2026-09-27T20:30:00Z",
+  "status": 400,
+  "error": "VALIDATION_ERROR",
+  "message": "Invalid request",
+  "path": "/api/example"
+}
+
+
+This allows the frontend to consistently handle:
+
+text
+Validation errors
+Authentication errors
+Authorization errors
+Network errors
+Server errors
+AI failures
+Database failures
+
+
+The required error structure is specified in the project requirements.
+
+---
+
+# 30. Security Architecture
+
+Security is applied at multiple layers.
+
+## Authentication
+
+text
+User
+ ↓
+Login
+ ↓
+Auth Service
+ ↓
+Validate credentials
+ ↓
+BCrypt password verification
+ ↓
+JWT
+ ↓
+Frontend
+
+
+## API request
+
+text
+Frontend
+ ↓
+Authorization: Bearer <JWT>
+ ↓
+API Gateway
+ ↓
+JWT validation
+ ↓
+Role authorization
+ ↓
+Backend service
+
+
+## Security controls
+
+The specification requires:
+
+- BCrypt
+- JWT
+- Role-based authorization
+- CORS
+- Input validation
+- JPA-based SQL injection protection
+- Rate limiting where practical
+- API authentication
+- Secure environment variables
+- No secrets in Git
+- Global exception handling
+- Admin audit logging
+
+AI keys and database credentials must never be exposed in the React application.
+
+---
+
+# 31. User Application Workflow
+
+This section describes the platform from the user's perspective.
+
+## Step 1 — Landing Page
+
+The user opens Vidya Vedika.
+
+They see:
+
+text
+Learn Languages.
+Practice with AI.
+Prepare for Success.
+
+
+Primary actions:
+
+text
+Start Learning
+Practice Mock Interview
+
+
+The landing page also introduces:
+
+- Popular languages
+- How Vidya Vedika works
+- AI-powered learning
+- Mock interviews
+- Student progress
+
+
+
+---
+
+# 32. Step 2 — Registration
+
+The user selects:
+
+text
+Sign Up
+
+
+They enter:
+
+text
+Name
+Email
+Password
+
+
+The backend:
+
+text
+Validates request
+       ↓
+Checks email
+       ↓
+Hashes password
+       ↓
+Creates user
+       ↓
+Assigns USER role
+
+
+The user can then log in.
+
+---
+
+# 33. Step 3 — Login
+
+The user enters:
+
+text
+Email
+Password
+
+
+The Auth Service validates the credentials.
+
+On successful login:
+
+text
+JWT Access Token
+        ↓
+Frontend
+        ↓
+Protected application
+
+
+A normal user is directed to:
+
+text
+User Dashboard
+
+
+An administrator is directed to:
+
+text
+Admin Dashboard
+
+
+Backend authorization remains authoritative.
+
+---
+
+# 34. Step 4 — Personal Dashboard
+
+After login the user sees:
+
+text
+Welcome
+Learning streak
+Practice sessions
+Overall progress
+Language progress
+AI sessions
+Interview attempts
+Daily tasks
+Achievements
+
+
+The dashboard becomes the user's central workspace.
+
+---
+
+# 35. Step 5 — Select a Language
+
+The user opens:
+
+text
+Languages
+
+
+They see language cards such as:
+
+text
+English
+Hindi
+Telugu
+Kannada
+Tamil
+Spanish
+French
+German
+Japanese
+
+
+The user chooses a language.
+
+Example:
+
+text
+English
+
+
+Then:
+
+text
+Learn English
+
+
+opens the learning path.
+
+---
+
+# 36. Step 6 — Start Learning
+
+The learning system presents progressive content.
+
+For example:
+
+text
+Level: Beginner
+
+✓ Alphabet
+✓ Common Words
+→ Pronunciation
+🔒 Basic Grammar
+🔒 Useful Sentences
+🔒 Conversations
+
+
+Completing one stage can unlock the next.
+
+---
+
+# 37. Step 7 — Daily Practice
+
+The user opens:
+
+text
+Today's Practice
+
+
+The system presents a limited daily workload.
+
+Example:
+
+text
+Vocabulary       ✓
+Pronunciation    ✓
+Spelling         ✓
+Listening        →
+Speaking         →
+
+
+The user completes the activities.
+
+The system updates:
+
+text
+Daily completion
+Learning streak
+Time spent
+Progress
+Achievements
+
+
+---
+
+# 38. Step 8 — AI Conversation
+
+The user opens:
+
+text
+Learn With AI
+
+
+They select:
+
+text
+Topic:
+Daily Conversation
+
+Difficulty:
+Beginner
+
+
+The AI starts:
+
+text
+AI:
+What did you do today?
+
+
+The user responds.
+
+The AI then:
+
+text
+Evaluates response
+Maintains context
+Corrects important mistakes
+Provides feedback
+Asks next question
+
+
+This continues as a conversational learning session.
+
+---
+
+# 39. Step 9 — Sentence Correction
+
+The user enters:
+
+text
+I am go to school yesterday.
+
+
+The AI correction system returns:
+
+text
+Correct:
+I went to school yesterday.
+
+Explanation:
+"Yesterday" refers to the past, so the past-tense form "went" is required.
+
+Natural version:
+I went to school yesterday.
+
+
+The correction is stored in the user's history.
+
+---
+
+# 40. Step 10 — Mock Interview
+
+The user chooses:
+
+text
+Mock Interviews
+
+
+Then:
+
+text
+Software Developer
+Experienced Professional
+
+
+The interview begins.
+
+Example:
+
+text
+Question 1:
+Tell me about yourself.
+
+
+The user answers.
+
+The system evaluates the answer.
+
+The next question is then presented.
+
+After completion:
+
+text
+Overall Performance
+Communication
+Grammar
+Confidence
+Answer Quality
+Vocabulary
+Areas for Improvement
+Suggested Better Answers
+
+
+The result becomes part of the user's interview history.
+
+---
+
+# 41. Step 11 — Progress Review
+
+The user can review:
+
+text
+Learning progress
+Words learned
+Practice time
+Language progress
+AI accuracy
+Interview scores
+Achievements
+Streak
+
+
+Charts allow the learner to understand improvement over time.
+
+---
+
+# 42. Step 12 — Achievements
+
+As the learner completes activities, achievements can be awarded.
+
+Example:
+
+text
+7-Day Streak
+100 Words Learned
+First AI Practice
+First Mock Interview
+
+
+Achievements appear on the dashboard.
+
+---
+
+# 43. Step 13 — Profile Management
+
+The user can update:
+
+text
+Name
+Profile photo
+Preferred language
+Learning level
+Learning goals
+Daily target
+Notification settings
+Security settings
+
+
+Sensitive operations require appropriate authentication.
+
+---
+
+# 44. Administrator Workflow
+
+The administrator follows a different workflow.
+
+text
+Admin Login
+     ↓
+Admin Dashboard
+     ↓
+User Management
+Language Management
+Learning Content
+AI Content
+Interview Management
+Reports
+Notifications
+Support/Contribution
+Settings
+
+
+---
+
+# 45. Admin — User Management
+
+Administrator can:
+
+text
+Search users
+Filter users
+Open user profile
+Activate account
+Deactivate account
+Delete account
+View learning progress
+View practice history
+View interview history
+
+
+Pagination is used for scalability.
+
+---
+
+# 46. Admin — Language Management
+
+Administrator can create:
+
+text
+Language
+Level
+Lesson
+Vocabulary
+Meaning
+Example
+Pronunciation resource
+Daily task
+
+
+This allows the platform to grow beyond the initial languages.
+
+---
+
+# 47. Admin — AI Management
+
+Administrator can manage:
+
+text
+AI Topics
+Conversation Scenarios
+Difficulty Levels
+Prompt Templates
+Correction Examples
+Vocabulary
+Feedback Configuration
+
+
+This keeps AI behavior configurable.
+
+---
+
+# 48. Admin — Interview Management
+
+Administrator can:
+
+text
+Create category
+Create question
+Edit question
+Delete question
+Set difficulty
+Order questions
+Review analytics
+
+
+---
+
+# 49. Admin — Analytics
+
+Administrative analytics can include:
+
+text
+User growth
+Language popularity
+Learning completion
+Practice frequency
+Mock interview statistics
+AI usage
+Support/contribution statistics
+
+
+Reports can be exported as:
+
+text
+CSV
+PDF
+
+
+The reporting requirements are specified in the supplied platform design.
+
+---
+
+# 50. Frontend Architecture
+
+A recommended frontend organization is:
+
+text
+frontend/
+│
+├── src/
+│   ├── components/
+│   │   ├── Button
+│   │   ├── Input
+│   │   ├── Select
+│   │   ├── Modal
+│   │   ├── Card
+│   │   ├── ProgressBar
+│   │   ├── Chart
+│   │   ├── DataTable
+│   │   ├── Pagination
+│   │   ├── Sidebar
+│   │   ├── Navbar
+│   │   ├── Breadcrumb
+│   │   ├── Toast
+│   │   ├── Badge
+│   │   ├── Avatar
+│   │   ├── LoadingSpinner
+│   │   ├── Skeleton
+│   │   ├── EmptyState
+│   │   ├── ErrorState
+│   │   └── ConfirmationDialog
+│   │
+│   ├── pages/
+│   ├── layouts/
+│   ├── routes/
+│   ├── services/
+│   ├── hooks/
+│   ├── types/
+│   └── utils/
+
+
+Reusable components are explicitly required to avoid duplicated UI code.
+
+---
+
+# 51. Backend Architecture
+
+Each service should follow a layered structure:
+
+text
+service/
+│
+├── controller/
+├── service/
+├── repository/
+├── entity/
+├── dto/
+├── mapper/
+├── exception/
+├── config/
+├── security/
+└── test/
+
+
+The intended request flow is:
+
+text
+HTTP Request
+     ↓
+Controller
+     ↓
+Validation
+     ↓
+Service
+     ↓
+Repository
+     ↓
+Database
+
+
+For external service calls:
+
+text
+Service
+   ↓
+Feign / REST Client
+   ↓
+Another Microservice
+
+
+---
+
+# 52. AI Prompt Architecture
+
+Prompts should not be embedded inside controllers.
+
+Dedicated components should include:
+
+text
+LanguagePracticePromptBuilder
+SentenceCorrectionPromptBuilder
+MockInterviewPromptBuilder
+
+
+Prompt inputs can include:
+
+text
+Language
+User level
+Topic
+Conversation history
+User goals
+
+
+AI responses should preferably use structured JSON and be validated before being returned to the frontend.
+
+---
+
+# 53. Docker Architecture
+
+Docker is used for local infrastructure and containerization.
+
+The platform should provide:
+
+text
+Frontend container
+API Gateway container
+Backend service containers
+MySQL container
+Optional Ollama container
+
+
+Local startup target:
+
+bash
+docker compose up -d
+
+
+The specification explicitly calls for Dockerfiles for the frontend and each Spring Boot service and a Docker Compose configuration for local development.
+
+---
+
+# 54. Environment Configuration
+
+Secrets must not be hard-coded.
+
+Example:
+
+text
+MYSQL_HOST
+MYSQL_PORT
+MYSQL_DATABASE
+MYSQL_USERNAME
+MYSQL_PASSWORD
+
+JWT_SECRET
+
+AI_PROVIDER
+AI_BASE_URL
+AI_MODEL
+
+CORS_ALLOWED_ORIGINS
+
+PAYMENT_UPI_ID
+
+
+A template should be provided:
+
+text
+.env.example
+
+
+The real `.env` file must not be committed to Git.
+
+---
+
+# 55. CI/CD
+
+GitHub Actions should perform:
+
+text
+Checkout
+   ↓
+Install dependencies
+   ↓
+Run tests
+   ↓
+Build frontend
+   ↓
+Build backend
+   ↓
+Build Docker images
+   ↓
+Deploy where supported
+
+
+Deployment provider configuration should remain replaceable because free-tier availability changes over time.
+
+---
+
+# 56. Testing Strategy
+
+## Backend
+
+Testing technologies:
+
+text
+JUnit
+Mockito
+Spring Boot Test
+Repository Tests
+Controller Tests
+Security Tests
+Integration Tests
+
+
+Important scenarios:
+
+text
+Registration
+Login
+Authorization
+Language progress
+Daily tasks
+AI practice
+Sentence correction
+Mock interview
+Admin CRUD
+
+
+## Frontend
+
+Tests should cover:
+
+text
+Component rendering
+Form validation
+API integration
+Protected routes
+Error states
+Loading states
+
+
+The specification explicitly requires testing of these major workflows.
+
+---
+
+# 57. Error Handling
+
+The application should handle:
+
+text
+Network failures
+Authentication expiration
+API errors
+Empty data
+Loading states
+AI failures
+Database failures
+Validation failures
+Authorization failures
+
+
+The user should receive a meaningful UI message instead of a raw stack trace.
+
+---
+
+# 58. Responsive Design
+
+## Desktop
+
+The intended layout is:
+
+text
+┌─────────────┬───────────────────────────┐
+│             │                           │
+│   Sidebar   │       Main Content        │
+│             │                           │
+│             │                           │
+└─────────────┴───────────────────────────┘
+
+
+## Mobile
+
+The sidebar can become:
+
+text
+Collapsible navigation
+
+
+or:
+
+text
+Bottom navigation
+
+
+The platform should remain usable across desktop, tablet, and mobile devices.
+
+---
+
+# 59. Accessibility
+
+The application should support:
+
+- Keyboard navigation
+- Proper form labels
+- ARIA attributes where needed
+- Color contrast
+- Responsive typography
+- Accessible forms
+- Focus states
+- Screen-reader-friendly navigation
+
+Accessibility is part of the stated platform requirements.
+
+---
+
+# 60. Scalability
+
+The platform is designed to eventually support:
+
+text
+Thousands of users
+More languages
+More lessons
+More AI features
+More interview categories
+Additional AI providers
+Voice practice
+Speech-to-text
+Text-to-speech
+
+
+Important scalability techniques include:
+
+text
+Pagination
+Database indexes
+Caching where useful
+Asynchronous processing where appropriate
+Stateless REST APIs
+
+
+
+
+---
+
+# 61. Deployment Architecture
+
+The target deployment can separate frontend and backend infrastructure.
+
+Example:
+
+text
+                   Internet
+                       │
+                       ▼
+              ┌────────────────┐
+              │ CDN / Frontend │
+              │ Vercel/Netlify │
+              └───────┬────────┘
+                      │
+                      ▼
+               ┌──────────────┐
+               │ API Gateway  │
+               └──────┬───────┘
+                      │
+       ┌──────────────┼──────────────┐
+       ▼              ▼              ▼
+    Services       Services       Services
+       │              │              │
+       └──────────────┼──────────────┘
+                      ▼
+                   MySQL
+
+
+Potential deployment providers mentioned in the specification include:
+
+text
+Frontend:
+Vercel / Netlify
+
+Backend:
+Render / Railway / another suitable platform
+
+Database:
+Free-tier MySQL-compatible provider where available
+
+
+These provider choices are not permanent assumptions; the architecture is intended to remain provider-independent.
+
+---
+
+# 62. Project Repository Structure
+
+The specified monorepo structure is:
+
+text
+vidya-vedika/
+│
+├── frontend/
+│
+├── backend/
+│   ├── api-gateway/
+│   ├── auth-service/
+│   ├── user-service/
+│   ├── language-service/
+│   ├── learning-service/
+│   ├── ai-practice-service/
+│   ├── mock-interview-service/
+│   ├── payment-service/
+│   ├── notification-service/
+│   └── admin-service/
+│
+├── infrastructure/
+│   ├── docker/
+│   ├── docker-compose.yml
+│   └── deployment/
+│
+├── .github/
+│   └── workflows/
+│
+├── README.md
+└── .env.example
+
+
+This structure is directly specified in the project requirements.
+
+---
+
+# 63. Seed Data
+
+Development/demo environments should contain:
+
+text
+Admin account
+Demo user
+Languages
+Lessons
+Vocabulary
+Daily tasks
+AI topics
+Interview categories
+Interview questions
+Achievements
+
+
+Demo credentials should be clearly documented and must not use real personal information.
+
+---
+
+# 64. Complete End-to-End User Journey
+
+The complete learner journey can be summarized as:
+
+text
+                 LANDING PAGE
+                       │
+                       ▼
+                  SIGN UP / LOGIN
+                       │
+                       ▼
+                 USER DASHBOARD
+                       │
+          ┌────────────┼─────────────┐
+          │            │             │
+          ▼            ▼             ▼
+      LANGUAGES    AI PRACTICE   MOCK INTERVIEW
+          │            │             │
+          ▼            ▼             ▼
+       LESSONS      CONVERSATION   QUESTIONS
+          │            │             │
+          ▼            ▼             ▼
+     VOCABULARY     FEEDBACK       ANSWERS
+          │            │             │
+          ▼            ▼             ▼
+     DAILY TASKS    CORRECTION     SCORING
+          │            │             │
+          └────────────┼─────────────┘
+                       ▼
+                  PROGRESS
+                       │
+                       ▼
+                 ACHIEVEMENTS
+                       │
+                       ▼
+                CONTINUOUS LEARNING
+
+
+The purpose of this workflow is to create a continuous feedback loop:
+
+text
+Learn
+ ↓
+Practice
+ ↓
+Make mistakes
+ ↓
+Receive feedback
+ ↓
+Improve
+ ↓
+Practice again
+ ↓
+Measure progress
+
+
+---
+
+# 65. Production Quality Requirements
+
+The final platform should:
+
+- Compile successfully
+- Run locally
+- Have functional navigation
+- Have functional authentication
+- Have protected routes
+- Enforce backend authorization
+- Persist data in MySQL
+- Provide functional admin CRUD
+- Persist learning progress
+- Provide daily tasks
+- Provide AI integration architecture
+- Provide mock interview functionality
+- Provide responsive UI
+- Provide loading states
+- Provide error states
+- Provide empty states
+- Provide API documentation
+- Provide database migration instructions
+- Provide Docker configuration
+- Provide deployment instructions
+- Use clean code
+- Use meaningful naming
+- Avoid fake frontend-only functionality
+
+These are explicitly stated as final quality requirements in the supplied specification.
+
+---
+
+# 66. Development Lifecycle
+
+The recommended implementation order is:
+
+text
+Phase 1
+Project Setup
+        ↓
+Phase 2
+Database + Authentication
+        ↓
+Phase 3
+User Management
+        ↓
+Phase 4
+Language + Learning
+        ↓
+Phase 5
+AI Practice
+        ↓
+Phase 6
+Mock Interviews
+        ↓
+Phase 7
+Admin
+        ↓
+Phase 8
+Analytics + Support
+        ↓
+Phase 9
+Testing + Production Engineering
+        ↓
+Phase 10
+Release
+
+
+After every major module:
+
+text
+Compile
+ ↓
+Run Tests
+ ↓
+Fix Errors
+ ↓
+Verify API Contracts
+ ↓
+Verify Frontend Integration
+ ↓
+Verify Responsive UI
+ ↓
+Continue
+
+
+The specification explicitly says not to move forward while major compilation or integration errors remain.
+
+---
+
+# 67. Final Architecture Summary
+
+Vidya Vedika is designed as a layered educational SaaS platform:
+
+text
+┌─────────────────────────────────────────────┐
+│                 PRESENTATION                │
+│         React + TypeScript + Vite           │
+│        Tailwind + Recharts + Axios          │
+└──────────────────────┬──────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────┐
+│                 API LAYER                   │
+│            Spring Cloud Gateway             │
+│       Routing + Security + CORS             │
+└──────────────────────┬──────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────┐
+│              BUSINESS SERVICES              │
+│                                             │
+│ Auth       User       Language              │
+│ Learning   AI         Interview             │
+│ Payment    Notification  Admin              │
+└──────────────────────┬──────────────────────┘
+                       │
+             ┌─────────┴─────────┐
+             ▼                   ▼
+       ┌──────────┐       ┌──────────────┐
+       │  MySQL   │       │ AI Providers │
+       │ Database │       │ Ollama/etc.  │
+       └──────────┘       └──────────────┘
+                       │
+┌──────────────────────▼──────────────────────┐
+│             INFRASTRUCTURE                  │
+│ Docker • GitHub Actions • Deployment        │
+│ Configuration • Testing • Monitoring        │
+└─────────────────────────────────────────────┘
+
+
+---
+
+# 68. Conclusion
+
+Vidya Vedika is intended to be more than a language-learning website. Its architecture combines structured education, personalized practice, AI-assisted feedback, interview preparation, progress analytics, and administrative content management into one platform.
+
+The core learner experience is:
+
+**Discover → Learn → Practice → Receive AI Feedback → Track Progress → Practice Interviews → Improve**
+
+The architecture is deliberately modular so that additional languages, lessons, AI providers, interview categories, voice capabilities, and scalability features can be introduced without redesigning the entire platform.
+
+The supplied specification identifies the final deliverables as a complete React frontend, Spring Boot microservices, MySQL design, REST APIs, JWT security, admin/user portals, AI abstraction, Ollama support, Docker, GitHub Actions, environment configuration, seed data, tests, README, deployment guidance, architecture documentation, and API documentation.
+
+
+| Area | System-design component |
+|---|---|
+| Frontend | React + TypeScript + Vite |
+| Entry point | API Gateway |
+| Authentication | Auth Service + JWT |
+| Authorization | Roles/RBAC |
+| Users | User Service |
+| Languages | Language Service |
+| Learning | Learning Service |
+| AI conversations | AI Practice Service |
+| AI provider | Provider abstraction + Ollama |
+| Sentence correction | AI Practice functionality |
+| Mock interviews | Mock Interview Service |
+| Contributions | Payment Service |
+| Notifications | Notification Service |
+| Administration | Admin Service |
+| Database | MySQL |
+| Deployment | Docker |
+| CI/CD | GitHub Actions |
+| Service discovery | Eureka where appropriate |
+| Security | Spring Security + JWT + BCrypt |
+| Validation | Bean Validation |
+| API communication | REST/OpenFeign where appropriate |
+
+-------------
+
+| Pattern | Where to use it | Purpose |
+|---|---|---|
+| **Strategy Pattern** | AI Provider | Switch between Ollama, Gemini, OpenAI, etc. |
+| **Factory Pattern** | AI Provider creation | Create the appropriate AI provider |
+| **Adapter Pattern** | External AI/payment services | Make different external APIs look consistent |
+| **Repository Pattern** | Every service | Separate persistence from business logic |
+| **Service Layer Pattern** | Spring Boot services | Keep business logic out of controllers |
+| **DTO Pattern** | REST APIs | Don't expose JPA entities directly |
+| **Builder Pattern** | Complex objects / API responses | Clean object construction |
+| **Facade Pattern** | Complex workflows | Provide a simple interface to multiple components |
+| **Observer / Event-Driven Pattern** | Notifications | React to events such as registration/interview completion |
+| **Circuit Breaker** | AI/external services | Prevent cascading failures |
+| **Retry Pattern** | External API calls | Retry transient failures |
+| **Saga Pattern** | Multi-service workflows | Manage distributed transactions |
+| **Dependency Injection** | Spring Boot | Loose coupling and testability |
+| **MVC Pattern** | REST services | Controller → Service → Repository separation |
+
+------------
+
+                    AIService
+                       |
+                       ▼
+                 AIProvider
+                  /       \
+                 /         \
+                ▼           ▼
+       OllamaAIProvider   GeminiProvider
+                             
+                       + OpenAIProvider

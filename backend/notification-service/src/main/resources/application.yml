@@ -1,0 +1,13 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: notification-service
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3307/vidya_notification?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
